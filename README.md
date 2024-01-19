@@ -42,7 +42,7 @@ Can be used as a command-line TOTP generator:
 
 ```bash
 $ python -m totp --help
-usage: totp.py [-h] [-a {sha1,sha256,sha512}] [-p PERIOD] [-d DIGITS] secret
+usage: totp.py [-h] [-s SET | -r REMOVE | -g GET | -l] [-a {sha1,sha256,sha512}] [-p PERIOD] [-d DIGITS] [-f FILE] [secret]
 
 Returns Time-Based One-Time Password (TOTP) from a Base32-encoded secret
 
@@ -51,12 +51,37 @@ positional arguments:
 
 options:
   -h, --help            show this help message and exit
+  -s SET, --set SET
+  -r REMOVE, --remove REMOVE
+  -g GET, --get GET
+  -l, --list
   -a {sha1,sha256,sha512}, --algo {sha1,sha256,sha512}
   -p PERIOD, --period PERIOD
   -d DIGITS, --digits DIGITS
+  -f FILE, --file FILE
 ```
 
 ```bash
-$ python -m totp JBSWY3DPEHPK3PXP
+$ chmod +x totp.py
+
+$ ./totp.py JBSWY3DPEHPK3PXP
 054285
+
+$ ./totp.py --set mysite JBSWY3DPEHPK3PXP
+Info: Added 'mysite' to file '/home/imonlyfourteen/.config/totp/.totp_secrets'
+
+$ ./totp.py --list
+List of available services from '/home/imonlyfourteen/.config/totp/.totp_secrets':
+
+Service            :       Secret       : Arguments
+mysite             :  JBSWY3DPEHPK3PXP  : --algo sha1 --period 30 --digits 6
+
+$ ./totp.py --get mysite
+654723
+
+$ ./totp.py --remove mysite
+Info: Service 'mysite' has been removed
 ```
+
+File specified with `--file` must have a directory prefix, e.g. `./my_secrets`.
+
